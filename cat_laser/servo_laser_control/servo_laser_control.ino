@@ -57,18 +57,21 @@ void loop() {
   
   if (on){
     // Get base/tilt commands from PC
-    while (!Serial.available());  // wait for data received
-    input = Serial.readString();
-    base_cmd = input.substring(0,3).toInt();
-    tilt_cmd = input.substring(3,6).toInt();
-    laser_cmd = (input.substring(6,7).toInt() == 1);
-  
-    // Servo control
-    servo_base.write(base_cmd);
-    servo_tilt.write(tilt_cmd);
-  
-    // Laser control
-    if (laser_cmd) {digitalWrite(DO_LASER_PIN, HIGH);}
-    else {digitalWrite(DO_LASER_PIN, LOW);}
+    if (Serial.available()){
+      input = Serial.readString();
+      base_cmd = input.substring(0,3).toInt();
+      tilt_cmd = input.substring(3,6).toInt();
+      laser_cmd = (input.substring(6,7).toInt() == 1);
+    
+      // Servo control
+      servo_base.write(base_cmd);
+      servo_tilt.write(tilt_cmd);
+    
+      // Laser control
+      if (laser_cmd) {digitalWrite(DO_LASER_PIN, HIGH);}
+      else {digitalWrite(DO_LASER_PIN, LOW);}
+
+      Serial.print(1);  // Tell the PC if we're on
+    }
   }
 }
