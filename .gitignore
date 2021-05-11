@@ -1,2 +1,3 @@
 cat_laser/.idea/
 cat_laser/venv/
+*.pyc
