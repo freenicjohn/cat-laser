@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Vision:
-    def __init__(self, p1=152, p2=193):
+    def __init__(self, p1=0, p2=109):
         """ Initialize the Vision object """
         self.width = 640
         self.height = 640
@@ -37,7 +37,7 @@ class Vision:
             p_1 = self.p1
             p_2 = self.p2
 
-        img_gray = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
+        img_gray = cv2.cvtColor(self.img_warped, cv2.COLOR_BGR2GRAY)
         img_blur = cv2.GaussianBlur(img_gray, (5, 5), 2)
         img_canny = cv2.Canny(img_blur, p_1, p_2)  # 1 and 2 are threshold params
         kernel = np.ones((5, 5), np.uint8)  # kernel required for dilation function
@@ -58,7 +58,7 @@ class Vision:
                     max_area = area
                     cv2.drawContours(self.img_contour, cnt, -1, (255, 0, 0), 2)
 
-        if len(contours) > 0:
+        if len(contours) > 0 and best_cnt != []:
             # Calculate center of biggest contour
             M = cv2.moments(best_cnt)
             self.cX = int(M["m10"] / M["m00"])
@@ -142,7 +142,7 @@ if __name__ == '__main__':
 
     while True:
         x, y = camera.get_center_of_object()
-        stackedImages = stack_images(0.6, [camera.img, camera.img_warped, camera.img_contour])
+        stackedImages = stack_images(0.6, [camera.img, camera.img_dilated, camera.img_warped, camera.img_contour])
         cv2.imshow("Result", stackedImages)
 
         print(x, y)

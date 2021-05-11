@@ -11,7 +11,7 @@ def convert_coords_for_laser(x, y):
     min_x_out = 49
     min_y_out = 45
     max_x_out = 125
-    max_y_out = 65
+    max_y_out = 75
 
     x_range_out = max_x_out - min_x_out
     y_range_out = max_y_out - min_y_out
@@ -32,14 +32,14 @@ if __name__ == '__main__':
 
     while True:
         center = camera.get_center_of_object()
-        stackedImages = stack_images(0.6, [camera.img, camera.img_warped, camera.img_contour])
+        stacked_images = stack_images(0.8, [camera.img, camera.img_contour])
 
         base, tilt = convert_coords_for_laser(center[0], center[1])
 
         laser_turret.command(base, tilt, laser)
 
         # Debugging visualization
-        cv2.imshow("Result", stackedImages)
+        cv2.imshow("Result", stacked_images)
         print("Target: (%s, %s)" % (center[0], center[1]))
         print("Base: %s, Tilt: %s" % (base, tilt))
 
