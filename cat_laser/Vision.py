@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Vision:
-    def __init__(self, p1=0, p2=109):
+    def __init__(self, p1=0, p2=160):
         """ Initialize the Vision object """
         self.width = 640
         self.height = 640
