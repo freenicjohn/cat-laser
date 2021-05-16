@@ -1,5 +1,3 @@
 # Cat-Laser
 
-### Useful Links
-- https://www.thingiverse.com/thing:2467743
-- https://create.arduino.cc/projecthub/MisterBotBreak/how-to-use-a-joystick-with-serial-monitor-1f04f0
+Check out the code in the "cat_laser" folder. I designed the files to be pretty modular so you can run "Vision.py" on its own and get a feel for how the tracking works.
