@@ -11,7 +11,7 @@ class Turret:
 
     def __init__(self):
         """ Initialize a turret object"""
-        self.arduino = serial.Serial(port='COM8', baudrate=115200, timeout=.1)
+        self.arduino = serial.Serial(port='COM10', baudrate=115200, timeout=.1)
         self.is_on = False
 
     def check_connection(self):

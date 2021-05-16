@@ -5,12 +5,16 @@ import numpy as np
 
 
 class Vision:
-    def __init__(self, p1=0, p2=160):
+    def __init__(self, p1=96, p2=200, top_left=[54,48], top_right=[600,32], bottom_left=[76,570], bottom_right=[607,607]):
         """ Initialize the Vision object """
         self.width = 640
         self.height = 640
         self.p1 = p1
         self.p2 = p2
+        self.top_left = top_left
+        self.top_right = top_right
+        self.bottom_left = bottom_left
+        self.bottom_right = bottom_right
         self.img = np.zeros(1)
         self.img_warped = np.zeros(1)
         self.img_dilated = np.zeros(1)
@@ -73,23 +77,35 @@ class Vision:
         """
         success, self.img = self.cap.read()  # Read from the webcam
         self.img = cv2.resize(self.img, (self.width, self.height))
-        self.img_warped = perspective_transform(self.img, self.width, self.height)
+        self.img_warped = self.perspective_transform(self.img, self.width, self.height)
         self.pre_processing()
         self.get_contours()
 
         return self.cX, self.cY
 
+    def perspective_transform(self, img, width, height):
+        """ Warps an angled image to create flat 2d image"""
 
-def perspective_transform(img, width, height):
-    """ Warps an angled image to create flat 2d image"""
-    pts1 = np.float32([[173, 205], [536, 220], [67, 487], [621, 497]])  #  the 4 corners of the shape - can be gotten
-                                                                        #  from paint or ShareX (cursor locations at
-                                                                        #  the corners)
-    pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])  # the 4 points to map to
-    matrix = cv2.getPerspectiveTransform(pts1, pts2)
-    img_warped = cv2.warpPerspective(img, matrix, (width, height))
+        if __name__ == '__main__':
+            # Move sliders to get corners for warp
+            top_left = [cv2.getTrackbarPos("T_L_x", "TrackBars"), cv2.getTrackbarPos("T_L_y", "TrackBars")]
+            top_right = [cv2.getTrackbarPos("T_R_x", "TrackBars"), cv2.getTrackbarPos("T_R_y", "TrackBars")]
+            bottom_left = [cv2.getTrackbarPos("B_L_x", "TrackBars"), cv2.getTrackbarPos("B_L_y", "TrackBars")]
+            bottom_right = [cv2.getTrackbarPos("B_R_x", "TrackBars"), cv2.getTrackbarPos("B_R_y", "TrackBars")]
+        else:
+            # Use values from init function
+            top_left = self.top_left
+            top_right = self.top_right
+            bottom_left = self.bottom_left
+            bottom_right = self.bottom_right
 
-    return img_warped
+        #  The 4 corners of the shape
+        pts1 = np.float32([top_left, top_right, bottom_left, bottom_right])
+        pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])  # the 4 points to map to
+        matrix = cv2.getPerspectiveTransform(pts1, pts2)
+        img_warped = cv2.warpPerspective(img, matrix, (width, height))
+
+        return img_warped
 
 
 def stack_images(scale, img_array):
@@ -131,14 +147,22 @@ def stack_images(scale, img_array):
 
 if __name__ == '__main__':
     camera = Vision()
-
     # Create trackbars for contour recognition tuning
     def empty(a):
         pass
     cv2.namedWindow("TrackBars")
-    cv2.resizeWindow("TrackBars", 640, 240)
+    cv2.resizeWindow("TrackBars", 640, 640)
     cv2.createTrackbar("P 1", "TrackBars", camera.p1, 200, empty)
     cv2.createTrackbar("P 2", "TrackBars", camera.p2, 200, empty)
+    cv2.createTrackbar("T_L_x", "TrackBars", 0, camera.width, empty)
+    cv2.createTrackbar("T_L_y", "TrackBars", 0, camera.height, empty)
+    cv2.createTrackbar("T_R_x", "TrackBars", camera.width, camera.width, empty)
+    cv2.createTrackbar("T_R_y", "TrackBars", 0, camera.height, empty)
+    cv2.createTrackbar("B_L_x", "TrackBars", 0, camera.width, empty)
+    cv2.createTrackbar("B_L_y", "TrackBars", camera.height, camera.height, empty)
+    cv2.createTrackbar("B_R_x", "TrackBars", camera.width, camera.width, empty)
+    cv2.createTrackbar("B_R_y", "TrackBars", camera.height, camera.height, empty)
+
 
     while True:
         x, y = camera.get_center_of_object()
