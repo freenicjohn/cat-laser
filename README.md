@@ -4,4 +4,4 @@
 - This repo contains everything needed to recreate this project: python code, Arduino code, wiring diagrams, and 3d models to print the turret!
 
 ![](cat_tracker.gif)
-![](assembly.jpg)
+![IMG_2720](https://github.com/freenicjohn/cat-laser/assets/36267675/e3f2c645-53e1-49a5-97a4-d5a9efbd03f5)
